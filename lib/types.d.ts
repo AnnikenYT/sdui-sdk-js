@@ -28,6 +28,17 @@ export interface ISduiOptions {
    * @todo not implemented yet.
    */
   axios_options?: any;
+  /**
+   * Whether to log the requests and responses to the console.
+   * @type {boolean}
+   * @default false
+   */
+  debug?: boolean;
+}
+
+export interface ISduiData {
+  lessons: ILessons;
+  last_updated_at: string;
 }
 
 export interface ISduiResponseMeta {
@@ -39,7 +50,7 @@ export interface ISduiResponseMeta {
 export type ISduiStatus = 'SUCCESS' | 'ERROR' | 'WARNING';
 
 export interface ISduiResponse {
-  data: ILessons;
+  data: ISduiData;
   meta: ISduiResponseMeta;
   status: ISduiStatus;
 }

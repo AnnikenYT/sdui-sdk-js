@@ -5,6 +5,7 @@ export declare class Sdui {
     private default_delta;
     api_url: string;
     private timetable_url;
+    debug: boolean;
     constructor(token?: string, user?: number, options?: ISduiOptions);
     /**
      * Get lessons asyncrhonously.
