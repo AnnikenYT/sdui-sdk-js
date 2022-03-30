@@ -1,5 +1,3 @@
-<center>
-
 # 📆 Sdui SDK
 
 ### An Object-Oriented Asyncronous Javascript SDK for communicating with the Sdui API.
@@ -7,10 +5,8 @@
 _Important note: This is a ***community*** project. Neither it nor the author is affiliated with Sdui GmBH._
 
 ![npm](https://img.shields.io/npm/v/sdui-sdk-js?style=for-the-badge)
-![node-current](https://img.shields.io/node/v/sdui-sdk-js?style=for-the-badge)
-[![CI](https://github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml/badge.svg)](https:// github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml)
-
-</center>
+![node-current](https://img.shields.io/node/v/sdui-sdk-js?style=for-the-badge) \
+[![CI](https://github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml)
 
 ## ✅ Features
 
