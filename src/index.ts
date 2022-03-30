@@ -17,6 +17,7 @@ export class Sdui {
     this.timetable_url = `${this.api_url}/users/${user}/timetable`;
     this.debug = options?.debug || false;
   }
+
   /**
    * Get lessons asyncrhonously.
    * @param timedelta the delta in days. 0 is today, 1 is tomorrow, -1 is yesterday.
@@ -26,23 +27,26 @@ export class Sdui {
   public async getLessonsAsync(timedelta?: number): Promise<ILesson[]> {
     const today = this.getTimestamp(timedelta);
     this._debug(`Getting lessons for ${today}`);
-    const result: AxiosResponse<ISduiResponse> = await Axios.get(`${this.timetable_url}`, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
-    });
-    this._debug("Got lessons");
-    this._debug("Resolving promise")
+    const result: AxiosResponse<ISduiResponse> = await Axios.get(
+      `${this.timetable_url}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
+    this._debug('Got lessons');
+    this._debug('Resolving promise');
     return Promise.resolve().then(() => {
       let lessons: ILesson[] = [];
-      this._debug("Parsing lessons");
+      this._debug('Parsing lessons');
       lessons = Object.values(
         result.data.data.lessons
       ).filter((lesson: ILesson) => lesson.dates.includes(today));
       this._debug(`Got ${lessons.length} lessons`);
-      this._debug("Sorting lessons");
+      this._debug('Sorting lessons');
       lessons = this.sort_lessons(lessons);
-      this._debug("Done");
+      this._debug('Done');
       return lessons;
     });
   }
@@ -93,13 +97,11 @@ export class Sdui {
       console.log(message);
     }
   }
-
   private sort_lessons(lessons: ILesson[]): ILesson[] {
     return lessons.sort((a: ILesson, b: ILesson) => {
       return a.time_begins_at - b.time_begins_at;
     });
   }
-
 }
 
 export class SduiNotAuthenticatedError extends Error {
