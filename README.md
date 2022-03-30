@@ -1,113 +1,106 @@
-# Sdui Javascript SDK
+<center>
 
-*Important note: This is a __**community**__ project. Neither it nor the author is affiliated with Sdui GmBH.*
+# 📆 Sdui SDK
+
+### An Object-Oriented Asyncronous Javascript SDK for communicating with the Sdui API.
+
+_Important note: This is a ***community*** project. Neither it nor the author is affiliated with Sdui GmBH._
 
 ![npm](https://img.shields.io/npm/v/sdui-sdk-js?style=for-the-badge)
 ![node-current](https://img.shields.io/node/v/sdui-sdk-js?style=for-the-badge)
----
-[![CI](https://github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml/badge.svg)](https://github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml)
+[![CI](https://github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml/badge.svg)](https:// github.com/AnnikenYT/sdui-sdk-js/actions/workflows/main.yml)
 
+</center>
 
-<!-- # TSDX User Guide
+## ✅ Features
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+- Login via Token and User ID
+- Getting all lessons by time delta
+- Getting current user
+- Object Oriented
+- Asyncronous
+- Self documented
+- More to come...
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+## 📝 Installation
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
-
-## Commands
-
-TSDX scaffolds your new library inside `/src`.
-
-To run TSDX, use:
+You can install the package via [npm](https://www.npmjs.com/package/sdui-sdk-js):
 
 ```bash
-npm start # or yarn start
+npm install sdui-sdk-js
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+## 💻 Usage
 
-To do a one-off build, use `npm run build` or `yarn build`.
+To get startet, first you need to create an instance of the SDK:
 
-To run tests, use `npm test` or `yarn test`.
+```ts
+import { Sdui } from 'sdui-sdk-js';
 
-## Configuration
+const sdui = new Sdui(
+  "<your-sdui-token>", // Token
+  000000, // User ID
+  {} // Options (Optional)
+);
 
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
 ```
 
-### Rollup
+From there, you can start using the SDK by getting the lessons for today:
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+```ts
+sdui.getLessonsAsync(0)
+    .then(lessons => {
+        console.log(lessons);
+    })
+    .catch(error => {
+        console.log(error);
+    });
+```
 
-### TypeScript
+Most functions are self documented. A full list will come soon.
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+## ⚙ Options
 
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+```ts
+export interface ISduiOptions {
+  /**
+   * The default delta for getLessons
+   * @type {number}
+   * @default 0
+   */
+  default_delta?: number;
+  /**
+   * If the data should be cached or not. Heavily recommended
+   * @type {boolean}
+   * @default true
+   */
+  cache_data?: boolean;
+  /**
+   * If the api url should be different from the default API
+   * @type {string}
+   * @default "https://api.sdui.app/v1"
+   */
+  api_url?: string;
+  /**
+   * Whether to authenticate the user automatically if no token or id is provided. If this is false, and no token or id is provided, you will need to authenticate manually.
+   * @type {boolean}
+   * @default true
+   */
+  no_auth?: boolean;
+  /**
+   * The sdk uses axios under the hood. Here you can pass in any axios options you want to use.
+   * @todo not implemented yet.
+   */
+  axios_options?: any;
+  /**
+   * Whether to log the requests and responses to the console.
+   * @type {boolean}
+   * @default false
+   */
+  debug?: boolean;
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+## ❓ Future Features
 
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np). -->
+[ ] Authentication via Username and Password
