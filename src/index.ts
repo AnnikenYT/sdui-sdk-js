@@ -91,6 +91,16 @@ export class Sdui {
     });
     return result.data.data;
   }
+  public async authAsync(email: string, password: string, school: string) {
+    const token = await this.getTokenAsync(email, password, school);
+    this.token = token;
+    const user = await this.getUserAsync();
+    if (user.id) {
+      this.user = user.id;
+    } else {
+      throw new SduiInvalidUserError(['id']);
+    }
+  }
 
   private _debug(message: any): void {
     if (this.debug) {
@@ -110,5 +120,13 @@ export class SduiNotAuthenticatedError extends Error {
       'User is not authenticated! Please authenticate with Sdui#authSync() first.'
     );
     this.name = 'SduiNotAuthenticatedError';
+  }
+}
+export class SduiInvalidUserError extends Error {
+  constructor(missing_propertys?: string[]) {
+    super(
+      `Recived invalid user response! Please check arguments. Specific missing arguments are: ${missing_propertys}`
+    );
+    this.name = 'SduiInvalidUserError';
   }
 }
