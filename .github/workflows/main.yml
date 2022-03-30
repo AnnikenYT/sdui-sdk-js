@@ -27,6 +27,9 @@ jobs:
 
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
+        env:
+          SDUI_TOKEN: ${{ secrets.SDUI_TOKEN }}
+          SDUI_USER_ID: ${{ secrets.SDUI_USER_ID }}
 
       - name: Build
         run: yarn build
