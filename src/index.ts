@@ -25,8 +25,9 @@ export class Sdui {
    * @returns a sorted array of lessons, sorted by start time.
    */
   public async getLessonsAsync(timedelta?: number): Promise<ILesson[]> {
+    this._needsToken();
     const today = this.getTimestamp(timedelta);
-    this._debug(`Getting lessons for ${today}`);
+    this._debug(`Getting lessons for ${today} using url ${this.timetable_url}`);
     const result: AxiosResponse<ISduiResponse> = await Axios.get(
       `${this.timetable_url}`,
       {
@@ -80,16 +81,41 @@ export class Sdui {
       password: password,
       slink: school,
     });
-    return result.data.data.token;
+    this._debug(result.data.data.token_type);
+    return result.data.data.access_token;
   }
 
   public async getUserAsync(): Promise<IUser> {
-    const result = await Axios.get(`${this.api_url}/self`, {
+    this._needsToken();
+    const result = await Axios.get(`${this.api_url}/users/self`, {
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
     });
+    this._debug(result.data.data.id);
     return result.data.data;
+  }
+  public async authAsync(email: string, password: string, school: string) {
+    const token = await this.getTokenAsync(email, password, school);
+    if (token) {
+      this.token = token;
+    } else {
+      throw new SduiInvalidUserError(['token']);
+    }
+    const user = await this.getUserAsync();
+    if (user.id) {
+      this.user = user.id;
+      this._debug('user:' + this.user);
+      this.timetable_url = `${this.api_url}/users/${this.user}/timetable`;
+    } else {
+      throw new SduiInvalidUserError(['id']);
+    }
+  }
+
+  private _needsToken(): void {
+    if (!this.token) {
+      throw new SduiNotAuthenticatedError();
+    }
   }
 
   private _debug(message: any): void {
@@ -110,5 +136,13 @@ export class SduiNotAuthenticatedError extends Error {
       'User is not authenticated! Please authenticate with Sdui#authSync() first.'
     );
     this.name = 'SduiNotAuthenticatedError';
+  }
+}
+export class SduiInvalidUserError extends Error {
+  constructor(missing_propertys?: string[]) {
+    super(
+      `Recived invalid user response! Please check arguments. Specific missing arguments are: ${missing_propertys}`
+    );
+    this.name = 'SduiInvalidUserError';
   }
 }

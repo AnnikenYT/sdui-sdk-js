@@ -37,11 +37,11 @@
   "size-limit": [
     {
       "path": "dist/sdui-sdk-js.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "15 KB"
     },
     {
       "path": "dist/sdui-sdk-js.esm.js",
-      "limit": "10 KB"
+      "limit": "15 KB"
     }
   ],
   "devDependencies": {

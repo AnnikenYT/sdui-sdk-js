@@ -30,6 +30,9 @@ jobs:
         env:
           SDUI_TOKEN: ${{ secrets.SDUI_TOKEN }}
           SDUI_USER_ID: ${{ secrets.SDUI_USER_ID }}
+          SDUI_EMAIL: ${{ secrets.SDUI_EMAIL }}
+          SDUI_PASSWORD: ${{ secrets.SDUI_PASSWORD }}
+          SDUI_SCHOOL: ${{ secrets.SDUI_SCHOOL }}
 
       - name: Build
         run: yarn build
