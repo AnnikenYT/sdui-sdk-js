@@ -25,7 +25,7 @@ export class Sdui {
    * @returns a sorted array of lessons, sorted by start time.
    */
   public async getLessonsAsync(timedelta?: number): Promise<ILesson[]> {
-    this._needsToken()
+    this._needsToken();
     const today = this.getTimestamp(timedelta);
     this._debug(`Getting lessons for ${today} using url ${this.timetable_url}`);
     const result: AxiosResponse<ISduiResponse> = await Axios.get(
@@ -81,7 +81,7 @@ export class Sdui {
       password: password,
       slink: school,
     });
-    this._debug(result.data.data.token_type)
+    this._debug(result.data.data.token_type);
     return result.data.data.access_token;
   }
 
@@ -92,7 +92,7 @@ export class Sdui {
         Authorization: `Bearer ${this.token}`,
       },
     });
-    this._debug(result.data.data.id)
+    this._debug(result.data.data.id);
     return result.data.data;
   }
   public async authAsync(email: string, password: string, school: string) {
@@ -100,12 +100,12 @@ export class Sdui {
     if (token) {
       this.token = token;
     } else {
-      throw new SduiInvalidUserError(['token'])
+      throw new SduiInvalidUserError(['token']);
     }
     const user = await this.getUserAsync();
     if (user.id) {
       this.user = user.id;
-      this._debug("user:" + this.user)
+      this._debug('user:' + this.user);
       this.timetable_url = `${this.api_url}/users/${this.user}/timetable`;
     } else {
       throw new SduiInvalidUserError(['id']);
@@ -114,7 +114,7 @@ export class Sdui {
 
   private _needsToken(): void {
     if (!this.token) {
-      throw new SduiNotAuthenticatedError()
+      throw new SduiNotAuthenticatedError();
     }
   }
 
