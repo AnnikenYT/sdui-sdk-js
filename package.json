@@ -31,7 +31,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "sdui-sdk-js",
+  "name": "@annikenyt/sdui-sdk-js",
   "author": "AnnikenYT",
   "module": "dist/sdui-sdk-js.esm.js",
   "size-limit": [
@@ -54,5 +54,9 @@
   },
   "dependencies": {
     "axios": "^0.26.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnnikenYT/sdui-sdk-js.git"
   }
 }
