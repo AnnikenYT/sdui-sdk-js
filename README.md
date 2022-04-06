@@ -21,7 +21,7 @@ _Important note: This is a ***community*** project. Neither it nor the author is
 
 ## 📝 Installation
 
-You can install the package via [npm](https://www.npmjs.com/package/sdui-sdk-js):
+You can install the package from [github packages](https://github.com/AnnikenYT/sdui-sdk-js/packages/1350044) using npm:
 
 ```bash
 npm install sdui-sdk-js
