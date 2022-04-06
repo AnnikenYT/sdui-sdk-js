@@ -10,6 +10,7 @@ _Important note: This is a ***community*** project. Neither it nor the author is
 
 ## ✅ Features
 
+- Login using Username and Password
 - Login via Token and User ID
 - Getting all lessons by time delta
 - Getting current user
@@ -28,18 +29,45 @@ npm install sdui-sdk-js
 
 ## 💻 Usage
 
-To get startet, first you need to create an instance of the SDK:
+To get startet, first you need to create an instance of the SDK.
+There are two ways to authenticate to the Sdui API:
+1. Pass authentication token and user id when creating the instance:
 
 ```ts
 import { Sdui } from 'sdui-sdk-js';
 
 const sdui = new Sdui(
-  "<your-sdui-token>", // Token
-  000000, // User ID
-  {} // Options (Optional)
+  "<your-sdui-token>",  // Token
+  000000,               // User ID
+  {}                    // Options (Optional)
 );
 
 ```
+
+2. Instanciate the SDK and then call the `.authAsync()` method with the correct arguments:
+
+```ts
+import { Sdui } from 'sdui-sdk-js';
+
+const sdui = new Sdui(
+  '', // Value can also be ommited if no options are needed.
+  0,  // ^^^^^
+  {}  // Options (Optional)
+)
+
+sdui.authAsync(
+  '<your-sdui-email>',
+  '<your-sdui-password>',
+  '<your-sdui-school-slink>'
+).then(() => {
+  /* Your code to interact with the api here */
+}).catch((err) => {
+  /* Catch any errors that might happen when authenticating. */
+});
+
+```
+
+In an asyncronous context you can also `await` the `.authAsync()` method to authenticate.
 
 From there, you can start using the SDK by getting the lessons for today:
 
