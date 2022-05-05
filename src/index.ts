@@ -1,6 +1,13 @@
 import { ISduiResponse } from './../lib/types.d';
 import { ISduiOptions, ILesson, IUser } from '../lib';
 import Axios, { AxiosResponse } from 'axios';
+
+/**
+ * SduiClient
+ * @param {string} token - The token to use for authentication
+ * @param {number} user - The user id to use for the timetable
+ * @param {ISduiOptions} options - The options to use for the client
+ */
 export class Sdui {
   private token: string;
   user: number;
@@ -52,25 +59,12 @@ export class Sdui {
     });
   }
 
-  private getTimestamp(delta?: number): number {
-    const timedelta = delta || this.default_delta;
-    return (
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1 + timedelta,
-        22
-      ) / 1000
-    );
-  }
   /**
-   * TODO: implement
    * @param username the username of the user you want to get
    * @param password the password of the user you want to get
    * @param school the school's slink of the user you want to get
    * @returns The user's token
    */
-  ///@ts-ignore
   private async getTokenAsync(
     username: string,
     password: string,
@@ -85,6 +79,10 @@ export class Sdui {
     return result.data.data.access_token;
   }
 
+  /**
+   * Gets user with the current token
+   * @returns The user
+   */
   public async getUserAsync(): Promise<IUser> {
     this._needsToken();
     const result = await Axios.get(`${this.api_url}/users/self`, {
@@ -110,6 +108,19 @@ export class Sdui {
     } else {
       throw new SduiInvalidUserError(['id']);
     }
+  }
+
+  // Utility functions
+  private getTimestamp(delta?: number): number {
+    const timedelta = delta || this.default_delta;
+    return (
+      Date.UTC(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate() - 1 + timedelta,
+        22
+      ) / 1000
+    );
   }
 
   private _needsToken(): void {

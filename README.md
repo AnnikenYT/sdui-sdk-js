@@ -21,11 +21,7 @@ _Important note: This is a ***community*** project. Neither it nor the author is
 
 ## 📝 Installation
 
-You can install the package from [github packages](https://github.com/AnnikenYT/sdui-sdk-js/packages/1350044) using npm:
-
-```bash
-npm install sdui-sdk-js
-```
+You can install the package from [github packages](https://github.com/AnnikenYT/sdui-sdk-js/packages/1350044). For a guide on how to use Github Packages, please read [here](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
 
 ## 💻 Usage
 
@@ -125,6 +121,8 @@ export interface ISduiOptions {
 }
 ```
 
-## ❓ Future Features
+## ❓ To Do
 
-[ ] Authentication via Username and Password
+[x] Login with username and password
+[ ] Fix Typings
+[ ] Publish to NPM
