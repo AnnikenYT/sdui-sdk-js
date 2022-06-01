@@ -298,7 +298,7 @@ export interface ISurvey {
   },
   meta: {
     is_over: boolean;
-    options: ISurveryOption[];
+    options: ISurveyOption[];
     is_user_voted: boolean;
     csv: string;
     xls: string;
@@ -336,7 +336,7 @@ export interface INewsPost {
   content_rendered?: string;
   user?: IUser;
   channels?: IChannel[] | Number[];
-  survey?: ISurvery;
+  survey?: ISurvey;
   updated_at?: string;
   created_at?: string;
   attachments?: IAttatchment[];
