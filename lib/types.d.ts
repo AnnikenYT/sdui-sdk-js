@@ -281,12 +281,12 @@ export interface IChannel {
   }
 }
 
-export interface ISurveryOption {
+export interface ISurveyOption {
   uuid?: string;
   name?: string;
   is_chosen?: boolean;
 }
-export interface ISurvery {
+export interface ISurvey {
   can: {
     view: boolean;
     vote: boolean;
