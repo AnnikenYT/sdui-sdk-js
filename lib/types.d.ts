@@ -49,8 +49,8 @@ export interface ISduiResponseMeta {
 
 export type ISduiStatus = 'SUCCESS' | 'ERROR' | 'WARNING';
 
-export interface ISduiResponse {
-  data: ISduiData;
+export interface ISduiResponse<T = ISduiData> {
+  data: T;
   meta: ISduiResponseMeta;
   status: ISduiStatus;
 }
@@ -103,8 +103,8 @@ export interface ICourse {
   meta: IMeta;
   subject: ISubject;
   id: number;
-  name: string | null;
-  description: string | null;
+  name: string;
+  description: string;
   subject_id: number;
 }
 
@@ -124,8 +124,8 @@ export interface ILesson {
   day: number;
   subject_id?: number;
   subject?: ISubject;
-  kind: TKind;
-  time_id: number | null;
+  kind?: TKind;
+  time_id: number;
   comment: string;
   course: ICourse;
   time_begins_at: number;
@@ -138,7 +138,6 @@ export interface ILesson {
 }
 
 export type TKind =
-  | null
   | 'EVENT'
   | 'SWAPED'
   | 'CANCLED'
@@ -179,15 +178,27 @@ export interface ISchool {
   hubspot_id: string;
 }
 
+export interface IShortCut {
+  id: number;
+  school_id: number;
+  shortcut: string;
+  name: string;
+  description: string;
+  meta: {
+    displayname: string;
+  }
+}
+
 export interface IUser {
   uuid?: string;
   firstname?: string;
   lastname?: string;
   email?: string;
+  username?: string;
   is_ghost?: boolean;
   is_trackable?: boolean;
-  dob?: null; // unknown
-  tfa_mode?: null; // unknown
+  dob?: any; // unknown
+  tfa_mode?: any; // unknown
   permissions?: []; // unknown
   school?: ISchool;
   bookable?: IBookable;
@@ -196,19 +207,184 @@ export interface IUser {
   parent_pivot?: IUser[];
   properties?: {}; // not implemented;
   grade?: IGrade;
+  grade_id?: number;
   roles?: []; // not implemented;
   id?: number;
   school_id?: number;
   username?: string;
   type?: string;
-  title?: null;
+  title?: string;
   sex?: string;
   state?: string;
-  expire_at?: null;
+  expire_at?: string;
   locale?: string;
   meta?: {}; // not implemented
   code?: string;
   registered_at?: string;
   confirmed_at?: string;
+  shortcut?: IShortCut
+  shortcut_id?: number;
+  meta?: {
+    displayname?: string;
+    subtitle?: string;
+    type?: string;
+    uri?: string;
+    avatar_uri?: string;
+    salutation?: string;
+    days_until_deletion?: number;
+    is_signed?: boolean;
+    is_paused?: boolean;
+    deleted_at?: string;
+    is_trackable_classbook_user?: boolean;
+  }
 }
 
+export interface IChannel {
+  id?: number;
+  uuid?: string;
+  name?: string;
+  description?: string;
+  description_members?: string;
+  type?: string;
+  subtitle?: string;
+  school_id?: number;
+  chat_id?: number;
+  cloud_id?: number;
+  target?: string;
+  intern_id?: number;
+  avatar?: string;
+  icon?: string;
+  color?: string;
+  is_leavable?: boolean;
+  is_public?: boolean;
+  is_disabled?: boolean;
+  is_twoway?: boolean;
+  is_hidden_memberlist?: boolean;
+  twoway_expires_at?: string;
+  activity_at?: string;
+  expires_at?: string;
+  expiration_reason?: string;
+  trashed_at?: string;
+  created_at?: string;
+  updated_at?: string;
+  group?: any; // not implemented
+  disabled_by_id?: any; // not implemented
+  pivot?: {
+    news_id?: number;
+    channel_id?: number;
+  },
+  meta?: {
+    is_official?: boolean;
+    subtitle?: string;
+    displayname?: string;
+    shortcut?: string;
+  }
+}
+
+export interface ISurveryOption {
+  uuid?: string;
+  name?: string;
+  is_chosen?: boolean;
+}
+export interface ISurvery {
+  can: {
+    view: boolean;
+    vote: boolean;
+    revoke: boolean;
+    results: boolean;
+    download: boolean;
+    end: boolean;
+    delete: boolean;
+  },
+  meta: {
+    is_over: boolean;
+    options: ISurveryOption[];
+    is_user_voted: boolean;
+    csv: string;
+    xls: string;
+    languages: string[];
+  }
+  question: string;
+  id: number;
+  uuid: string;
+  is_multi_answerable: boolean;
+  is_anonymous: boolean;
+  is_freetext: boolean;
+  results_visibility: string;
+  has_translations: boolean;
+  created_at: string;
+  updated_at: string;
+  expires_at: string;
+  ended_at: string;
+  deleted_at: string;
+  user: IUser
+}
+
+
+export interface INewsPost {
+  id?: number;
+  title?: string;
+  content?: string;
+  has_translations?: boolean;
+  survey_uuid?: string;
+  is_confirmable?: boolean;
+  is_public?: boolean;
+  is_official?: boolean;
+  is_pinned?: boolean;
+  published_at?: string;
+  has_emergency_sms?: boolean;
+  content_rendered?: string;
+  user?: IUser;
+  channels?: IChannel[] | Number[];
+  survey?: ISurvery;
+  updated_at?: string;
+  created_at?: string;
+  attachments?: IAttatchment[];
+  preview?: string;
+  meta?: {
+    uri?: string;
+    confirm_uri?: boolean;
+    is_confirmed?: boolean;
+    languages?: string[];
+    csv?: string;
+    xls?: string;
+    statistics?: {
+      readby?: {
+        total?: number;
+        current?: number;
+      },
+      confirmed?: {
+      total?: number;
+        current?: number;
+      }
+    }
+  },
+  can?: {
+    update?: boolean;
+    'view-statistics'?: boolean;
+    confirm?: boolean;
+    notify?: boolean;
+    delete?: boolean;
+    pin?: boolean;
+  }
+}
+
+interface IAttatchment {
+  id?: number;
+  uuid?: string;
+  user_id?: number;
+  source_id?: number;
+  source_type?: string;
+  name?: string;
+  type?: string;
+  extension?: string;
+  size?: number;
+  created_at?: string;
+  updated_at?: string;
+  file_type?: string;
+  meta?: {
+    uri?: string;
+    download_uri?: string;
+    temp_uri?: string;
+  }
+}

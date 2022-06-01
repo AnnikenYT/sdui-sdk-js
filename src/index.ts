@@ -1,9 +1,8 @@
-import { ISduiResponse } from './../lib/types.d';
-import { ISduiOptions, ILesson, IUser } from '../lib';
+import { ISduiOptions, ILesson, IUser, ISduiResponse, INewsPost } from '../lib';
 import Axios, { AxiosResponse } from 'axios';
 
 /**
- * SduiClient
+ * Sdui Client
  * @param {string} token - The token to use for authentication
  * @param {number} user - The user id to use for the timetable
  * @param {ISduiOptions} options - The options to use for the client
@@ -15,15 +14,17 @@ export class Sdui {
   api_url: string;
   private timetable_url: string;
   debug: boolean;
-
+  
   constructor(token?: string, user?: number, options?: ISduiOptions) {
-    this.token = token || '';
+    this.token = token?.split(" ", 2)[1] || '';
     this.user = user || 0;
     this.default_delta = options?.default_delta || 0;
     this.api_url = options?.api_url || 'https://api.sdui.app/v1';
     this.timetable_url = `${this.api_url}/users/${user}/timetable`;
     this.debug = options?.debug || false;
   }
+
+  // SECION: Get methods
 
   /**
    * Get lessons asyncrhonously.
@@ -60,6 +61,39 @@ export class Sdui {
   }
 
   /**
+   * Get news posts asyncrhonously.
+   * @param page the page of the posts to get
+   * @returns a list of NewsPosts
+   */
+  public async getNewsAsync(page?: number): Promise<INewsPost[]> {
+    this._needsToken();
+    const result = await Axios.get<ISduiResponse<INewsPost[]>>(`${this.api_url}/users/${this.user}/feed/news${page ? "?page=" + page : ""}`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    return result.data.data;
+  }
+
+  // SECTION: Post methods
+  /**
+   * Post a new news post
+   * @param {INewsPost} post - The post to post
+   * @returns The posted post
+   */
+  public async postNewsAsync(post: INewsPost): Promise<INewsPost> {
+    this._needsToken();
+    const result = await Axios.post<ISduiResponse<INewsPost>>(`${this.api_url}/channels/news`, post, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    return result.data.data;
+  }
+
+
+  // SECTION: Authentication
+  /**
    * @param username the username of the user you want to get
    * @param password the password of the user you want to get
    * @param school the school's slink of the user you want to get
@@ -93,6 +127,16 @@ export class Sdui {
     this._debug(result.data.data.id);
     return result.data.data;
   }
+
+
+
+  /**
+   * Login as a user
+   * This should only be used if you did not pass a token to the constructor
+   * @param email the email of the user you want to log in as
+   * @param password the password of the user you want to log in as
+   * @param school the school's slink of the user you want to log in as
+   */
   public async authAsync(email: string, password: string, school: string) {
     const token = await this.getTokenAsync(email, password, school);
     if (token) {
@@ -110,7 +154,7 @@ export class Sdui {
     }
   }
 
-  // Utility functions
+  // SECTION: Utility functions
   private getTimestamp(delta?: number): number {
     const timedelta = delta || this.default_delta;
     return (
