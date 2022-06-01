@@ -14,9 +14,9 @@ export class Sdui {
   api_url: string;
   private timetable_url: string;
   debug: boolean;
-  
+
   constructor(token?: string, user?: number, options?: ISduiOptions) {
-    this.token = token?.split(" ", 2)[1] || '';
+    this.token = token?.split(' ', 2)[1] || '';
     this.user = user || 0;
     this.default_delta = options?.default_delta || 0;
     this.api_url = options?.api_url || 'https://api.sdui.app/v1';
@@ -67,11 +67,16 @@ export class Sdui {
    */
   public async getNewsAsync(page?: number): Promise<INewsPost[]> {
     this._needsToken();
-    const result = await Axios.get<ISduiResponse<INewsPost[]>>(`${this.api_url}/users/${this.user}/feed/news${page ? "?page=" + page : ""}`, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
-    });
+    const result = await Axios.get<ISduiResponse<INewsPost[]>>(
+      `${this.api_url}/users/${this.user}/feed/news${
+        page ? '?page=' + page : ''
+      }`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
     return result.data.data;
   }
 
@@ -83,14 +88,17 @@ export class Sdui {
    */
   public async postNewsAsync(post: INewsPost): Promise<INewsPost> {
     this._needsToken();
-    const result = await Axios.post<ISduiResponse<INewsPost>>(`${this.api_url}/channels/news`, post, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
-    });
+    const result = await Axios.post<ISduiResponse<INewsPost>>(
+      `${this.api_url}/channels/news`,
+      post,
+      {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      }
+    );
     return result.data.data;
   }
-
 
   // SECTION: Authentication
   /**
@@ -127,8 +135,6 @@ export class Sdui {
     this._debug(result.data.data.id);
     return result.data.data;
   }
-
-
 
   /**
    * Login as a user
