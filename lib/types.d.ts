@@ -339,7 +339,7 @@ export interface INewsPost {
   survey?: ISurvey;
   updated_at?: string;
   created_at?: string;
-  attachments?: IAttatchment[];
+  attachments?: IAttachment[];
   preview?: string;
   meta?: {
     uri?: string;
@@ -369,7 +369,7 @@ export interface INewsPost {
   }
 }
 
-interface IAttatchment {
+interface IAttachment {
   id?: number;
   uuid?: string;
   user_id?: number;
