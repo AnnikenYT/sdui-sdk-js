@@ -388,3 +388,8 @@ interface IAttachment {
     temp_uri?: string;
   }
 }
+
+export interface IPostable {
+  type: "User" | "Ch";
+  entity: IChannel | IUser;
+}

@@ -1,4 +1,4 @@
-import { ISduiOptions, ILesson, IUser, ISduiResponse, INewsPost } from '../lib';
+import { ISduiOptions, ILesson, IUser, ISduiResponse, INewsPost, IPostable } from '../lib';
 import Axios, { AxiosResponse } from 'axios';
 
 /**
@@ -16,7 +16,7 @@ export class Sdui {
   debug: boolean;
 
   constructor(token?: string, user?: number, options?: ISduiOptions) {
-    this.token = token?.split(' ', 2)[1] || '';
+    this.token = token || '';
     this.user = user || 0;
     this.default_delta = options?.default_delta || 0;
     this.api_url = options?.api_url || 'https://api.sdui.app/v1';
@@ -68,8 +68,7 @@ export class Sdui {
   public async getNewsAsync(page?: number): Promise<INewsPost[]> {
     this._needsToken();
     const result = await Axios.get<ISduiResponse<INewsPost[]>>(
-      `${this.api_url}/users/${this.user}/feed/news${
-        page ? '?page=' + page : ''
+      `${this.api_url}/users/${this.user}/feed/news${page ? '?page=' + page : ''
       }`,
       {
         headers: {
@@ -77,6 +76,20 @@ export class Sdui {
         },
       }
     );
+    return result.data.data;
+  }
+
+  /**
+   * Get Postables (Newschannels)
+   * @returns A list of postables
+   */
+  public async getPostablesAsync(): Promise<IPostable[]> {
+    this._needsToken();
+    const result = await Axios.get<ISduiResponse<IPostable[]>>(`${this.api_url}/users/self/channels/postable?order-by=name&type=global&order-by=name&order-dir=asc&search=`, {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
     return result.data.data;
   }
 
@@ -99,6 +112,9 @@ export class Sdui {
     );
     return result.data.data;
   }
+
+
+
 
   // SECTION: Authentication
   /**
@@ -190,8 +206,18 @@ export class Sdui {
     });
   }
 }
+/**
+ * Thrown on invalid response from Sdui
+ * @param message The message of the error
+ */
+export class SduiError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'SduiError';
+  }
+}
 
-export class SduiNotAuthenticatedError extends Error {
+export class SduiNotAuthenticatedError extends SduiError {
   constructor() {
     super(
       'User is not authenticated! Please authenticate with Sdui#authSync() first.'
@@ -199,7 +225,7 @@ export class SduiNotAuthenticatedError extends Error {
     this.name = 'SduiNotAuthenticatedError';
   }
 }
-export class SduiInvalidUserError extends Error {
+export class SduiInvalidUserError extends SduiError {
   constructor(missing_propertys?: string[]) {
     super(
       `Recived invalid user response! Please check arguments. Specific missing arguments are: ${missing_propertys}`
@@ -207,3 +233,4 @@ export class SduiInvalidUserError extends Error {
     this.name = 'SduiInvalidUserError';
   }
 }
+
