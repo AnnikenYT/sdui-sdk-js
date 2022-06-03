@@ -390,6 +390,6 @@ interface IAttachment {
 }
 
 export interface IPostable {
-  type: "User" | "Ch";
+  type: "User" | "Channel";
   entity: IChannel | IUser;
 }

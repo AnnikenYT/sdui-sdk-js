@@ -1,2 +1,5 @@
 export * from "./types"
 export * from "../dist/index.d"
+export * from "../dist/SduiBaseClass.d"
+export * from "../dist/NewsPost.d"
+export * from "../dist/Survey.d"

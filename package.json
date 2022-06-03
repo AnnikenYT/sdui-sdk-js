@@ -17,7 +17,8 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
-    "analyze": "size-limit --why"
+    "analyze": "size-limit --why",
+    "husky": "husky install"
   },
   "peerDependencies": {},
   "husky": {
@@ -46,14 +47,17 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^7.0.8",
-    "husky": "^7.0.4",
+    "@types/lodash": "^4.14.182",
+    "husky": "^8.0.1",
+    "lodash-es": "^4.17.21",
     "size-limit": "^7.0.8",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "axios": "^0.26.0"
+    "axios": "^0.26.0",
+    "lodash": "^4.17.21"
   },
   "repository": {
     "type": "git",

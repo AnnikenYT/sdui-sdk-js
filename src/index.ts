@@ -1,5 +1,7 @@
-import { ISduiOptions, ILesson, IUser, ISduiResponse, INewsPost, IPostable } from '../lib';
-import Axios, { AxiosResponse } from 'axios';
+import { ILesson, ISduiResponse, INewsPost, IPostable } from '../lib';
+import { AxiosResponse } from 'axios';
+import { SduiBaseClass } from './SduiBaseClass';
+import { NewsPost } from './NewsPost';
 
 /**
  * Sdui Client
@@ -7,43 +9,19 @@ import Axios, { AxiosResponse } from 'axios';
  * @param {number} user - The user id to use for the timetable
  * @param {ISduiOptions} options - The options to use for the client
  */
-export class Sdui {
-  private token: string;
-  user: number;
-  private default_delta: number;
-  api_url: string;
-  private timetable_url: string;
-  debug: boolean;
-
-  constructor(token?: string, user?: number, options?: ISduiOptions) {
-    this.token = token || '';
-    this.user = user || 0;
-    this.default_delta = options?.default_delta || 0;
-    this.api_url = options?.api_url || 'https://api.sdui.app/v1';
-    this.timetable_url = `${this.api_url}/users/${user}/timetable`;
-    this.debug = options?.debug || false;
-  }
+export class Sdui extends SduiBaseClass {
 
   // SECION: Get methods
 
   /**
    * Get lessons asyncrhonously.
    * @param timedelta the delta in days. 0 is today, 1 is tomorrow, -1 is yesterday.
-   * @default options.default_delta || 0
    * @returns a sorted array of lessons, sorted by start time.
    */
   public async getLessonsAsync(timedelta?: number): Promise<ILesson[]> {
-    this._needsToken();
     const today = this.getTimestamp(timedelta);
-    this._debug(`Getting lessons for ${today} using url ${this.timetable_url}`);
-    const result: AxiosResponse<ISduiResponse> = await Axios.get(
-      `${this.timetable_url}`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
-      }
-    );
+    this._debug(`Getting lessons for ${today} using url ${this.Axios.defaults.baseURL}/user/self/timetable`);
+    const result: AxiosResponse<ISduiResponse> = await this.Axios.get("/user/self/timetable")
     this._debug('Got lessons');
     this._debug('Resolving promise');
     return Promise.resolve().then(() => {
@@ -65,18 +43,18 @@ export class Sdui {
    * @param page the page of the posts to get
    * @returns a list of NewsPosts
    */
-  public async getNewsAsync(page?: number): Promise<INewsPost[]> {
-    this._needsToken();
-    const result = await Axios.get<ISduiResponse<INewsPost[]>>(
-      `${this.api_url}/users/${this.user}/feed/news${page ? '?page=' + page : ''
-      }`,
+  public async getNewsAsync(page?: number): Promise<NewsPost[]> {
+    const result = await this.Axios.get<ISduiResponse<INewsPost[]>>(
+      "/users/self/feed/news",
       {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
+        params: {
+          "page": page,
+        }
       }
     );
-    return result.data.data;
+    return result.data.data.map((post: INewsPost) => {
+      return new NewsPost(this.token, this.options, post);
+    });
   }
 
   /**
@@ -84,122 +62,27 @@ export class Sdui {
    * @returns A list of postables
    */
   public async getPostablesAsync(): Promise<IPostable[]> {
-    this._needsToken();
-    const result = await Axios.get<ISduiResponse<IPostable[]>>(`${this.api_url}/users/self/channels/postable?order-by=name&type=global&order-by=name&order-dir=asc&search=`, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
+    const result = await this.Axios.get<ISduiResponse<IPostable[]>>("/users/self/channels/postable", {
+      params: {
+        "order-by": "name",
+        "order-dir": "asc",
+        "type": "global",
+        "search": "",
+      }
     });
     return result.data.data;
   }
 
-  // SECTION: Post methods
+  // SECTION: Factory methods
   /**
-   * Post a new news post
+   * Create a new post
    * @param {INewsPost} post - The post to post
    * @returns The posted post
    */
-  public async postNewsAsync(post: INewsPost): Promise<INewsPost> {
-    this._needsToken();
-    const result = await Axios.post<ISduiResponse<INewsPost>>(
-      `${this.api_url}/channels/news`,
-      post,
-      {
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
-      }
-    );
-    return result.data.data;
+   public createNewsPost(post: INewsPost): NewsPost {
+    return new NewsPost(this.token, this.options, post)
   }
 
-
-
-
-  // SECTION: Authentication
-  /**
-   * @param username the username of the user you want to get
-   * @param password the password of the user you want to get
-   * @param school the school's slink of the user you want to get
-   * @returns The user's token
-   */
-  private async getTokenAsync(
-    username: string,
-    password: string,
-    school: string
-  ): Promise<string> {
-    const result = await Axios.post(`${this.api_url}/auth/login`, {
-      identifier: username,
-      password: password,
-      slink: school,
-    });
-    this._debug(result.data.data.token_type);
-    return result.data.data.access_token;
-  }
-
-  /**
-   * Gets user with the current token
-   * @returns The user
-   */
-  public async getUserAsync(): Promise<IUser> {
-    this._needsToken();
-    const result = await Axios.get(`${this.api_url}/users/self`, {
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
-    });
-    this._debug(result.data.data.id);
-    return result.data.data;
-  }
-
-  /**
-   * Login as a user
-   * This should only be used if you did not pass a token to the constructor
-   * @param email the email of the user you want to log in as
-   * @param password the password of the user you want to log in as
-   * @param school the school's slink of the user you want to log in as
-   */
-  public async authAsync(email: string, password: string, school: string) {
-    const token = await this.getTokenAsync(email, password, school);
-    if (token) {
-      this.token = token;
-    } else {
-      throw new SduiInvalidUserError(['token']);
-    }
-    const user = await this.getUserAsync();
-    if (user.id) {
-      this.user = user.id;
-      this._debug('user:' + this.user);
-      this.timetable_url = `${this.api_url}/users/${this.user}/timetable`;
-    } else {
-      throw new SduiInvalidUserError(['id']);
-    }
-  }
-
-  // SECTION: Utility functions
-  private getTimestamp(delta?: number): number {
-    const timedelta = delta || this.default_delta;
-    return (
-      Date.UTC(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate() - 1 + timedelta,
-        22
-      ) / 1000
-    );
-  }
-
-  private _needsToken(): void {
-    if (!this.token) {
-      throw new SduiNotAuthenticatedError();
-    }
-  }
-
-  private _debug(message: any): void {
-    if (this.debug) {
-      console.log(message);
-    }
-  }
   private sort_lessons(lessons: ILesson[]): ILesson[] {
     return lessons.sort((a: ILesson, b: ILesson) => {
       return a.time_begins_at - b.time_begins_at;
