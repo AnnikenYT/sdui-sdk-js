@@ -17,8 +17,7 @@
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
-    "analyze": "size-limit --why",
-    "husky": "husky install"
+    "analyze": "size-limit --why"
   },
   "peerDependencies": {},
   "husky": {
@@ -48,7 +47,6 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^7.0.8",
     "@types/lodash": "^4.14.182",
-    "husky": "^8.0.1",
     "lodash-es": "^4.17.21",
     "size-limit": "^7.0.8",
     "tsdx": "^0.14.1",

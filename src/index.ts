@@ -10,7 +10,6 @@ import { NewsPost } from './NewsPost';
  * @param {ISduiOptions} options - The options to use for the client
  */
 export class Sdui extends SduiBaseClass {
-
   // SECION: Get methods
 
   /**
@@ -20,8 +19,12 @@ export class Sdui extends SduiBaseClass {
    */
   public async getLessonsAsync(timedelta?: number): Promise<ILesson[]> {
     const today = this.getTimestamp(timedelta);
-    this._debug(`Getting lessons for ${today} using url ${this.Axios.defaults.baseURL}/user/self/timetable`);
-    const result: AxiosResponse<ISduiResponse> = await this.Axios.get("/user/self/timetable")
+    this._debug(
+      `Getting lessons for ${today} using url ${this.Axios.defaults.baseURL}/user/self/timetable`
+    );
+    const result: AxiosResponse<ISduiResponse> = await this.Axios.get(
+      '/user/self/timetable'
+    );
     this._debug('Got lessons');
     this._debug('Resolving promise');
     return Promise.resolve().then(() => {
@@ -45,11 +48,11 @@ export class Sdui extends SduiBaseClass {
    */
   public async getNewsAsync(page?: number): Promise<NewsPost[]> {
     const result = await this.Axios.get<ISduiResponse<INewsPost[]>>(
-      "/users/self/feed/news",
+      '/users/self/feed/news',
       {
         params: {
-          "page": page,
-        }
+          page: page,
+        },
       }
     );
     return result.data.data.map((post: INewsPost) => {
@@ -62,14 +65,17 @@ export class Sdui extends SduiBaseClass {
    * @returns A list of postables
    */
   public async getPostablesAsync(): Promise<IPostable[]> {
-    const result = await this.Axios.get<ISduiResponse<IPostable[]>>("/users/self/channels/postable", {
-      params: {
-        "order-by": "name",
-        "order-dir": "asc",
-        "type": "global",
-        "search": "",
+    const result = await this.Axios.get<ISduiResponse<IPostable[]>>(
+      '/users/self/channels/postable',
+      {
+        params: {
+          'order-by': 'name',
+          'order-dir': 'asc',
+          type: 'global',
+          search: '',
+        },
       }
-    });
+    );
     return result.data.data;
   }
 
@@ -79,8 +85,8 @@ export class Sdui extends SduiBaseClass {
    * @param {INewsPost} post - The post to post
    * @returns The posted post
    */
-   public createNewsPost(post: INewsPost): NewsPost {
-    return new NewsPost(this.token, this.options, post)
+  public createNewsPost(post: INewsPost): NewsPost {
+    return new NewsPost(this.token, this.options, post);
   }
 
   private sort_lessons(lessons: ILesson[]): ILesson[] {
@@ -116,4 +122,3 @@ export class SduiInvalidUserError extends SduiError {
     this.name = 'SduiInvalidUserError';
   }
 }
-
