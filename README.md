@@ -1,5 +1,9 @@
 # 📆 Sdui SDK
 
+**Read Me!**
+> This project is currently unmaintained. I am planning to update it again in the forseable future, but I do not have the time because of school and other projects.
+> PRs are more than welcome!
+
 ### An Object-Oriented Asyncronous Javascript SDK for communicating with the Sdui API.
 
 _Important note: This is a ***community*** project. Neither it nor the author is affiliated with Sdui GmBH._
