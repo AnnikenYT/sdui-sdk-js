@@ -1,7 +1,8 @@
 # 📆 Sdui SDK
 
 **Read Me!**
-> This project is currently unmaintained. I am planning to update it again in the forseable future, but I do not have the time because of school and other projects.
+> This project is currently unmaintained. I am planning to update it again in the forseable future, but I am studying at a different school this year, meaning I do not have access to sdui. Due to major updates in the sdui backend a while back, this library may or may not work at the moment.
+> The next update may take until May or August 2023.
 > PRs are more than welcome!
 
 ### An Object-Oriented Asyncronous Javascript SDK for communicating with the Sdui API.
