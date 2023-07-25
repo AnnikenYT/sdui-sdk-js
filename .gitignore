@@ -3,5 +3,4 @@
 node_modules
 dist
 coverage
-test/passwords.sh
-
+.env
